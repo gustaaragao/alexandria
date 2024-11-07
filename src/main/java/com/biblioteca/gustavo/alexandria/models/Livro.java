@@ -1,5 +1,7 @@
-package com.biblioteca.gustavo.alexandria.livro;
+package com.biblioteca.gustavo.alexandria.models;
 
+import com.biblioteca.gustavo.alexandria.enums.EditoraEnum;
+import com.biblioteca.gustavo.alexandria.enums.GeneroEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,11 +29,11 @@ public class Livro {
     private Long id;
     private String nome;
     @Enumerated(EnumType.STRING)
-    private Genero genero;
+    private GeneroEnum genero;
     private String autor;
     private String dataLancamento;
     private int numeroPaginas;
     private int quantidade;
     @Enumerated(EnumType.STRING)
-    private Editora editora;
+    private EditoraEnum editora;
 }

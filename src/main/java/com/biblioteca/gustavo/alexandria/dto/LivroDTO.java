@@ -1,4 +1,4 @@
-package com.biblioteca.gustavo.alexandria.DTO;
+package com.biblioteca.gustavo.alexandria.dto;
 
 import com.biblioteca.gustavo.alexandria.enums.EditoraEnum;
 import com.biblioteca.gustavo.alexandria.enums.GeneroEnum;

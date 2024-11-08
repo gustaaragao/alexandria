@@ -7,9 +7,6 @@ public record LivroDTO(
     String nome,
     GeneroEnum genero,
     String autor,
-    String dataLancamento,
-    int numeroPaginas,
-    int quantidade,
     EditoraEnum editora
 ) {
 }

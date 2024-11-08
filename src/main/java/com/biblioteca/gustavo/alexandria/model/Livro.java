@@ -29,9 +29,6 @@ public class Livro {
 		this.nome = novoLivroDTO.nome();
 		this.genero = novoLivroDTO.genero();
 		this.autor = novoLivroDTO.autor();
-		this.dataLancamento = novoLivroDTO.dataLancamento();
-		this.numeroPaginas = novoLivroDTO.numeroPaginas();
-		this.quantidade = novoLivroDTO.quantidade();
 		this.editora = novoLivroDTO.editora();
 	}
 
@@ -42,9 +39,6 @@ public class Livro {
 	@Enumerated(EnumType.STRING)
 	private GeneroEnum genero;
 	private String autor;
-	private String dataLancamento;
-	private int numeroPaginas;
-	private int quantidade;
 	@Enumerated(EnumType.STRING)
 	private EditoraEnum editora;
 }

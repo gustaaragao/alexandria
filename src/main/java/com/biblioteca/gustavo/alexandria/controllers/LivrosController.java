@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/livros")
@@ -32,12 +33,18 @@ public class LivrosController {
 
     @PostMapping
     @Transactional // Rebombinar a aplicacao para antes do erro na requisicao
-    public void cadastrarLivro(@RequestBody @Valid DadosCadastroLivroDTO novoLivroDTO) {
-
+    public ResponseEntity<Object> cadastrarLivro(
+        @RequestBody @Valid DadosCadastroLivroDTO novoLivroDTO,
+        UriComponentsBuilder uriBuilder
+    ) {
         Livro novoLivro = new Livro(novoLivroDTO);
-
         repository.save(novoLivro);
 
+        // A classe UriComponentsBuilder encapsula toda a lógica para gerar URIs. (O problema aqui é localhost vs deploy)
+        // buildAndExpand serve para gerar de maneira dinâmica o {id}
+        var uri = uriBuilder.path("/livros/{id}").buildAndExpand(novoLivro.getId()).toUri();
+
+        return ResponseEntity.created(uri).body(new ResponseLivroDTO(novoLivro));
     }
 
     @GetMapping
@@ -45,6 +52,13 @@ public class LivrosController {
         var listaLivros = repository.findAllByAtivoTrue().stream().map(ResponseLivroDTO::new).toList();
 
         return ResponseEntity.ok(listaLivros);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseLivroDTO> buscarLivroPorId(@PathVariable Long id) {
+        var livro = repository.getReferenceById(id);
+
+        return ResponseEntity.ok(new ResponseLivroDTO(livro));
     }
 
     @PutMapping
@@ -73,7 +87,7 @@ public class LivrosController {
         
         livroReferencia.inativar();
 
-        return ResponseEntity.noContent().build(); // .build() permite a criação de uma entidade sem body
+        return ResponseEntity.noContent().build();
     }
     
     @PutMapping("reativar/{id}")
@@ -83,6 +97,6 @@ public class LivrosController {
         
         livroReferencia.ativar();
 
-        return ResponseEntity.ok().build(); // .build() permite a criação de uma entidade sem body
+        return ResponseEntity.ok().build();
     }
 }

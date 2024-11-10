@@ -13,7 +13,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,19 +35,24 @@ public class Livro {
 		this.editora = novoLivroDTO.editora();
 		this.lancamento = novoLivroDTO.lancamento();
 		this.quantidade = novoLivroDTO.quantidade();
+		this.ativo = true;
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String nome;
+	private String autor;
+	
 	@Enumerated(EnumType.STRING)
 	private GeneroEnum genero;
-	private String autor;
+	
 	@Enumerated(EnumType.STRING)
 	private EditoraEnum editora;
+
 	private LocalDate lancamento;
 	private int quantidade;
+	private boolean ativo;
 
 	public void atualizarInformacoes(DadosAtualizarLivroDTO novosDados) {
 		if (novosDados.nome() != null)
@@ -61,5 +65,9 @@ public class Livro {
 			this.editora = novosDados.editora();
 		if (novosDados.lancamento() != null)
 			this.lancamento = novosDados.lancamento();
+	}
+
+	public void inativar() {
+		this.ativo = false;
 	}
 }

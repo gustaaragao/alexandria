@@ -12,7 +12,9 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,7 +41,7 @@ public class LivrosController {
 
     @GetMapping
     public List<DadosListagemLivrosDTO> listarLivros() {
-        return repository.findAll().stream().map(DadosListagemLivrosDTO::new).toList();
+        return repository.findAllByAtivoTrue().stream().map(DadosListagemLivrosDTO::new).toList();
     }
 
     @PutMapping
@@ -49,5 +51,19 @@ public class LivrosController {
         var livroReferencia = repository.getReferenceById(novosDadosLivroDTO.id());
     
         livroReferencia.atualizarInformacoes(novosDadosLivroDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void excluirLivro(@PathVariable Long id) {
+        repository.deleteById(id);
+    }
+
+    @DeleteMapping("inativar/{id}")
+    @Transactional
+    public void inativarLivro(@PathVariable Long id) {
+        var livroReferencia = repository.getReferenceById(id);
+
+        livroReferencia.inativar();
     }
 }

@@ -2,6 +2,7 @@ package com.biblioteca.gustavo.alexandria.model;
 
 import java.time.LocalDate;
 
+import com.biblioteca.gustavo.alexandria.dto.DadosAtualizarLivroDTO;
 import com.biblioteca.gustavo.alexandria.dto.DadosCadastroLivroDTO;
 import com.biblioteca.gustavo.alexandria.enums.EditoraEnum;
 import com.biblioteca.gustavo.alexandria.enums.GeneroEnum;
@@ -12,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -47,4 +49,17 @@ public class Livro {
 	private EditoraEnum editora;
 	private LocalDate lancamento;
 	private int quantidade;
+
+	public void atualizarInformacoes(DadosAtualizarLivroDTO novosDados) {
+		if (novosDados.nome() != null)
+			this.nome = novosDados.nome();
+		if (novosDados.genero() != null)
+			this.genero = novosDados.genero();
+		if (novosDados.autor() != null)
+			this.autor = novosDados.autor();
+		if (novosDados.editora() != null)
+			this.editora = novosDados.editora();
+		if (novosDados.lancamento() != null)
+			this.lancamento = novosDados.lancamento();
+	}
 }

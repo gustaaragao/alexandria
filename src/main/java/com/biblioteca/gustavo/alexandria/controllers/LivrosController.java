@@ -1,8 +1,8 @@
-package com.biblioteca.gustavo.alexandria.controller;
+package com.biblioteca.gustavo.alexandria.controllers;
 
 import com.biblioteca.gustavo.alexandria.dto.DadosAtualizarLivroDTO;
 import com.biblioteca.gustavo.alexandria.dto.DadosCadastroLivroDTO;
-import com.biblioteca.gustavo.alexandria.dto.DadosListagemLivrosDTO;
+import com.biblioteca.gustavo.alexandria.dto.ResponseLivroDTO;
 import com.biblioteca.gustavo.alexandria.model.Livro;
 import com.biblioteca.gustavo.alexandria.repository.LivroRepository;
 
@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,30 +41,48 @@ public class LivrosController {
     }
 
     @GetMapping
-    public List<DadosListagemLivrosDTO> listarLivros() {
-        return repository.findAllByAtivoTrue().stream().map(DadosListagemLivrosDTO::new).toList();
+    public ResponseEntity<List<ResponseLivroDTO>> listarLivros() {
+        var listaLivros = repository.findAllByAtivoTrue().stream().map(ResponseLivroDTO::new).toList();
+
+        return ResponseEntity.ok(listaLivros);
     }
 
     @PutMapping
     @Transactional
-    public void atualizarLivro(@RequestBody @Valid DadosAtualizarLivroDTO novosDadosLivroDTO) {
+    public ResponseEntity<ResponseLivroDTO> atualizarLivro(@RequestBody @Valid DadosAtualizarLivroDTO novosDadosLivroDTO) {
         // Pegar a referência para esse Livro que será atualizado
         var livroReferencia = repository.getReferenceById(novosDadosLivroDTO.id());
-    
+
         livroReferencia.atualizarInformacoes(novosDadosLivroDTO);
+
+        return ResponseEntity.ok(new ResponseLivroDTO(livroReferencia));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public void excluirLivro(@PathVariable Long id) {
+    public ResponseEntity<Void> excluirLivro(@PathVariable Long id) {
         repository.deleteById(id);
-    }
 
+        return ResponseEntity.noContent().build(); // .build() permite a criação de uma entidade sem body
+    }
+    
     @DeleteMapping("inativar/{id}")
     @Transactional
-    public void inativarLivro(@PathVariable Long id) {
+    public ResponseEntity<Void> inativarLivro(@PathVariable Long id) {
         var livroReferencia = repository.getReferenceById(id);
-
+        
         livroReferencia.inativar();
+
+        return ResponseEntity.noContent().build(); // .build() permite a criação de uma entidade sem body
+    }
+    
+    @PutMapping("reativar/{id}")
+    @Transactional
+    public ResponseEntity<Void> reativarLivro(@PathVariable Long id) {
+        var livroReferencia = repository.getReferenceById(id);
+        
+        livroReferencia.ativar();
+
+        return ResponseEntity.ok().build(); // .build() permite a criação de uma entidade sem body
     }
 }

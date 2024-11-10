@@ -4,6 +4,8 @@ create table livros(
 	genero varchar(100) not null,
 	autor varchar(100) not null,
 	editora varchar(100) not null,
+	lancamento varchar(100) not null,
+	quantidade int(20) not null,
 	
 	primary key (id)
 );

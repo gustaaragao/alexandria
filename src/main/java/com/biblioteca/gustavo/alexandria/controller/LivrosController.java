@@ -1,10 +1,17 @@
 package com.biblioteca.gustavo.alexandria.controller;
 
-import com.biblioteca.gustavo.alexandria.dto.LivroDTO;
+import com.biblioteca.gustavo.alexandria.dto.DadosCadastroLivroDTO;
+import com.biblioteca.gustavo.alexandria.dto.DadosListagemLivrosDTO;
 import com.biblioteca.gustavo.alexandria.model.Livro;
 import com.biblioteca.gustavo.alexandria.repository.LivroRepository;
 
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +26,8 @@ public class LivrosController {
     private LivroRepository repository;
 
     @PostMapping
-    public void cadastrarLivro(@RequestBody LivroDTO novoLivroDTO) {
+    @Transactional // Rebombinar a aplicacao para antes do erro na requisicao
+    public void cadastrarLivro(@RequestBody @Valid DadosCadastroLivroDTO novoLivroDTO) {
 
         Livro novoLivro = new Livro(novoLivroDTO);
 
@@ -27,4 +35,8 @@ public class LivrosController {
 
     }
 
+    @GetMapping
+    public List<DadosListagemLivrosDTO> listarLivros() {
+        return repository.findAll().stream().map(DadosListagemLivrosDTO::new).toList();
+    }
 }

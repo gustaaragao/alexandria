@@ -1,6 +1,8 @@
 package com.biblioteca.gustavo.alexandria.model;
 
-import com.biblioteca.gustavo.alexandria.dto.LivroDTO;
+import java.time.LocalDate;
+
+import com.biblioteca.gustavo.alexandria.dto.DadosCadastroLivroDTO;
 import com.biblioteca.gustavo.alexandria.enums.EditoraEnum;
 import com.biblioteca.gustavo.alexandria.enums.GeneroEnum;
 import jakarta.persistence.Entity;
@@ -25,11 +27,13 @@ import lombok.Setter;
 @EqualsAndHashCode(of = "id")
 public class Livro {
 
-	public Livro(LivroDTO novoLivroDTO) {
+	public Livro(DadosCadastroLivroDTO novoLivroDTO) {
 		this.nome = novoLivroDTO.nome();
 		this.genero = novoLivroDTO.genero();
 		this.autor = novoLivroDTO.autor();
 		this.editora = novoLivroDTO.editora();
+		this.lancamento = novoLivroDTO.lancamento();
+		this.quantidade = novoLivroDTO.quantidade();
 	}
 
 	@Id
@@ -41,4 +45,6 @@ public class Livro {
 	private String autor;
 	@Enumerated(EnumType.STRING)
 	private EditoraEnum editora;
+	private LocalDate lancamento;
+	private int quantidade;
 }

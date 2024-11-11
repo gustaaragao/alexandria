@@ -6,7 +6,7 @@ import com.biblioteca.gustavo.alexandria.enums.EditoraEnum;
 import com.biblioteca.gustavo.alexandria.enums.GeneroEnum;
 import com.biblioteca.gustavo.alexandria.model.Livro;
 
-public record ResponseLivroDTO(
+public record LivroResponseDTO(
     Long id, 
 	String nome, 
 	GeneroEnum genero, 
@@ -14,13 +14,13 @@ public record ResponseLivroDTO(
 	EditoraEnum editora, 
 	LocalDate lancamento,
     int quantidade,
-    Boolean ativado
+    Boolean disponivel
 ) {
     
-    public ResponseLivroDTO(Livro livro) {
+    public LivroResponseDTO(Livro livro) {
         this(
             livro.getId(), livro.getNome(), livro.getGenero(), livro.getAutor(), 
-            livro.getEditora(), livro.getLancamento(), livro.getQuantidade(), livro.isAtivo()
+            livro.getEditora(), livro.getLancamento(), livro.getQuantidade(), livro.isDisponivel()
         );
     }
 

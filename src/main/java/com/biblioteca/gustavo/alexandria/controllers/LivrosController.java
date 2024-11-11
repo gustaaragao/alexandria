@@ -1,8 +1,8 @@
 package com.biblioteca.gustavo.alexandria.controllers;
 
-import com.biblioteca.gustavo.alexandria.dto.DadosAtualizarLivroDTO;
-import com.biblioteca.gustavo.alexandria.dto.DadosCadastroLivroDTO;
-import com.biblioteca.gustavo.alexandria.dto.ResponseLivroDTO;
+import com.biblioteca.gustavo.alexandria.dto.LivroAtualizarDTO;
+import com.biblioteca.gustavo.alexandria.dto.LivroCriarDTO;
+import com.biblioteca.gustavo.alexandria.dto.LivroResponseDTO;
 import com.biblioteca.gustavo.alexandria.model.Livro;
 import com.biblioteca.gustavo.alexandria.repository.LivroRepository;
 
@@ -34,7 +34,7 @@ public class LivrosController {
     @PostMapping
     @Transactional // Rebombinar a aplicacao para antes do erro na requisicao
     public ResponseEntity<Object> cadastrarLivro(
-        @RequestBody @Valid DadosCadastroLivroDTO novoLivroDTO,
+        @RequestBody @Valid LivroCriarDTO novoLivroDTO,
         UriComponentsBuilder uriBuilder
     ) {
         Livro novoLivro = new Livro(novoLivroDTO);
@@ -44,32 +44,32 @@ public class LivrosController {
         // buildAndExpand serve para gerar de maneira dinâmica o {id}
         var uri = uriBuilder.path("/livros/{id}").buildAndExpand(novoLivro.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(new ResponseLivroDTO(novoLivro));
+        return ResponseEntity.created(uri).body(new LivroResponseDTO(novoLivro));
     }
 
     @GetMapping
-    public ResponseEntity<List<ResponseLivroDTO>> listarLivros() {
-        var listaLivros = repository.findAllByAtivoTrue().stream().map(ResponseLivroDTO::new).toList();
+    public ResponseEntity<List<LivroResponseDTO>> listarLivros() {
+        var listaLivros = repository.findAllByAtivoTrue().stream().map(LivroResponseDTO::new).toList();
 
         return ResponseEntity.ok(listaLivros);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseLivroDTO> buscarLivroPorId(@PathVariable Long id) {
+    public ResponseEntity<LivroResponseDTO> buscarLivroPorId(@PathVariable Long id) {
         var livro = repository.getReferenceById(id);
 
-        return ResponseEntity.ok(new ResponseLivroDTO(livro));
+        return ResponseEntity.ok(new LivroResponseDTO(livro));
     }
 
     @PutMapping
     @Transactional
-    public ResponseEntity<ResponseLivroDTO> atualizarLivro(@RequestBody @Valid DadosAtualizarLivroDTO novosDadosLivroDTO) {
+    public ResponseEntity<LivroResponseDTO> atualizarLivro(@RequestBody @Valid LivroAtualizarDTO novosDadosLivroDTO) {
         // Pegar a referência para esse Livro que será atualizado
         var livroReferencia = repository.getReferenceById(novosDadosLivroDTO.id());
 
         livroReferencia.atualizarInformacoes(novosDadosLivroDTO);
 
-        return ResponseEntity.ok(new ResponseLivroDTO(livroReferencia));
+        return ResponseEntity.ok(new LivroResponseDTO(livroReferencia));
     }
 
     @DeleteMapping("/{id}")
@@ -85,7 +85,7 @@ public class LivrosController {
     public ResponseEntity<Void> inativarLivro(@PathVariable Long id) {
         var livroReferencia = repository.getReferenceById(id);
         
-        livroReferencia.inativar();
+        livroReferencia.setDisponivel(false);
 
         return ResponseEntity.noContent().build();
     }
@@ -95,7 +95,7 @@ public class LivrosController {
     public ResponseEntity<Void> reativarLivro(@PathVariable Long id) {
         var livroReferencia = repository.getReferenceById(id);
         
-        livroReferencia.ativar();
+        livroReferencia.setDisponivel(true);
 
         return ResponseEntity.ok().build();
     }

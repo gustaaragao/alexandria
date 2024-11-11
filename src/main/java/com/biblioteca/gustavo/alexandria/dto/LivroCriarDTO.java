@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public record DadosCadastroLivroDTO(
+public record LivroCriarDTO(
         @NotBlank String nome,
         @Enumerated GeneroEnum genero,
         @NotBlank(message="O campo 'autor' não deve estar em branco.")

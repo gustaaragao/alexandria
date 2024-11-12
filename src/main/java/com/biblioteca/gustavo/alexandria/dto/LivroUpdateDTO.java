@@ -7,9 +7,7 @@ import com.biblioteca.gustavo.alexandria.enums.GeneroEnum;
 
 import jakarta.validation.constraints.NotNull;
 
-public record LivroAtualizarDTO(
-    @NotNull
-    Long id, // Apenas esse campo é obrigatório, por causa do @NotNull
+public record LivroUpdateDTO(
     String nome,
     GeneroEnum genero,
     String autor,

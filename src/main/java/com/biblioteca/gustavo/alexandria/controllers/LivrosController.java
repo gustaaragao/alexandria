@@ -1,11 +1,10 @@
 package com.biblioteca.gustavo.alexandria.controllers;
 
-import com.biblioteca.gustavo.alexandria.dto.LivroAtualizarDTO;
-import com.biblioteca.gustavo.alexandria.dto.LivroCriarDTO;
+import com.biblioteca.gustavo.alexandria.dto.LivroUpdateDTO;
+import com.biblioteca.gustavo.alexandria.dto.LivroCreateDTO;
 import com.biblioteca.gustavo.alexandria.dto.LivroResponseDTO;
-import com.biblioteca.gustavo.alexandria.model.Livro;
-import com.biblioteca.gustavo.alexandria.repository.LivroRepository;
 
+import com.biblioteca.gustavo.alexandria.services.LivroService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -13,89 +12,86 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/livros")
 public class LivrosController {
 
-    // Injecao de Dependencias
+    private final LivroService livroService;
+
     @Autowired
-    private LivroRepository repository;
+    public LivrosController(LivroService livroService) {
+        this.livroService = livroService;
+    }
 
     @PostMapping
     @Transactional // Rebombinar a aplicacao para antes do erro na requisicao
-    public ResponseEntity<Object> cadastrarLivro(
-        @RequestBody @Valid LivroCriarDTO novoLivroDTO,
-        UriComponentsBuilder uriBuilder
-    ) {
-        Livro novoLivro = new Livro(novoLivroDTO);
-        repository.save(novoLivro);
+    public ResponseEntity<Object> createLivro(@RequestBody @Valid LivroCreateDTO livroCreateDTO, UriComponentsBuilder uriBuilder) {
+        LivroResponseDTO livroResponseDTO = livroService.createLivro(livroCreateDTO);
 
-        // A classe UriComponentsBuilder encapsula toda a lógica para gerar URIs. (O problema aqui é localhost vs deploy)
-        // buildAndExpand serve para gerar de maneira dinâmica o {id}
-        var uri = uriBuilder.path("/livros/{id}").buildAndExpand(novoLivro.getId()).toUri();
+        var uri = uriBuilder.path("/livros/{id}").buildAndExpand(livroResponseDTO.id()).toUri();
 
-        return ResponseEntity.created(uri).body(new LivroResponseDTO(novoLivro));
+        return ResponseEntity.created(uri).body(livroResponseDTO);
     }
 
     @GetMapping
-    public ResponseEntity<List<LivroResponseDTO>> listarLivros() {
-        var listaLivros = repository.findAllByAtivoTrue().stream().map(LivroResponseDTO::new).toList();
+    public ResponseEntity<List<LivroResponseDTO>> getLivros(
+            @RequestParam(value = "disponivel", required = false)
+            Boolean disponivel
+    ) {
+        List<LivroResponseDTO> livros;
 
-        return ResponseEntity.ok(listaLivros);
+        if (disponivel == null) {
+            livros = livroService.getAllLivros();
+        } else if (disponivel) {
+            livros = livroService.getAllLivrosDisponiveis();
+        } else {
+            livros = livroService.getAllLivrosIndisponiveis();
+        }
+
+        return ResponseEntity.ok(livros);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LivroResponseDTO> buscarLivroPorId(@PathVariable Long id) {
-        var livro = repository.getReferenceById(id);
+    @GetMapping("/{idLivro}")
+    public ResponseEntity<LivroResponseDTO> getLivroById(@PathVariable Long idLivro) {
+        LivroResponseDTO livroResponseDTO = livroService.getLivroById(idLivro);
 
-        return ResponseEntity.ok(new LivroResponseDTO(livro));
+        return ResponseEntity.ok(livroResponseDTO);
     }
 
-    @PutMapping
+    @PutMapping("{idLivro}")
     @Transactional
-    public ResponseEntity<LivroResponseDTO> atualizarLivro(@RequestBody @Valid LivroAtualizarDTO novosDadosLivroDTO) {
-        // Pegar a referência para esse Livro que será atualizado
-        var livroReferencia = repository.getReferenceById(novosDadosLivroDTO.id());
+    public ResponseEntity<LivroResponseDTO> updateLivro(
+            @PathVariable Long idLivro,
+            @RequestBody @Valid LivroUpdateDTO livroUpdateDTO
+    ) {
+        LivroResponseDTO livroResponseDTO = livroService.updateLivro(idLivro, livroUpdateDTO);
 
-        livroReferencia.atualizarInformacoes(novosDadosLivroDTO);
-
-        return ResponseEntity.ok(new LivroResponseDTO(livroReferencia));
+        return ResponseEntity.ok(livroResponseDTO);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{idLivro}")
     @Transactional
-    public ResponseEntity<Void> excluirLivro(@PathVariable Long id) {
-        repository.deleteById(id);
+    public ResponseEntity<Void> deleteLivro(@PathVariable Long idLivro) {
+        livroService.deleteLivro(idLivro);
 
         return ResponseEntity.noContent().build(); // .build() permite a criação de uma entidade sem body
     }
-    
-    @DeleteMapping("inativar/{id}")
+
+    @DeleteMapping("disable/{idLivro}")
     @Transactional
-    public ResponseEntity<Void> inativarLivro(@PathVariable Long id) {
-        var livroReferencia = repository.getReferenceById(id);
-        
-        livroReferencia.setDisponivel(false);
+    public ResponseEntity<Void> disableLivro(@PathVariable Long idLivro) {
+        livroService.disableLivro(idLivro);
 
         return ResponseEntity.noContent().build();
     }
-    
-    @PutMapping("reativar/{id}")
+
+    @PutMapping("enable/{idLivro}")
     @Transactional
-    public ResponseEntity<Void> reativarLivro(@PathVariable Long id) {
-        var livroReferencia = repository.getReferenceById(id);
-        
-        livroReferencia.setDisponivel(true);
+    public ResponseEntity<Void> enableLivro(@PathVariable Long idLivro) {
+        livroService.enableLivro(idLivro);
 
         return ResponseEntity.ok().build();
     }

@@ -8,6 +8,7 @@ import com.biblioteca.gustavo.alexandria.model.Livro;
 
 public interface LivroRepository extends JpaRepository<Livro, Long> {
 
-    List<Livro> findAllByAtivoTrue();
-    
+    List<Livro> findAllByDisponivelTrue();
+
+    List<Livro> findAllByDisponivelFalse();
 }

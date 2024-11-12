@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import jakarta.persistence.EntityNotFoundException;
 
 @ControllerAdvice
-public class RestExceptionHandlerConfig {
+public class GlobalExceptionHandler {
     
     public record ApiError(String field, String message) {
         public ApiError(FieldError error) {

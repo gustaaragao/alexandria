@@ -61,7 +61,7 @@ public class BooksController {
         return ResponseEntity.ok(bookResponseDTO);
     }
 
-    @PutMapping("{idBook}")
+    @PutMapping("/{idBook}")
     @Transactional
     public ResponseEntity<BookResponseDTO> updateBook(
             @PathVariable Long idBook,

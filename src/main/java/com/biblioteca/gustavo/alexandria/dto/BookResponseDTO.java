@@ -12,7 +12,7 @@ public record BookResponseDTO(
 	String author, 
 	GenreEnum genre, 
 	PublisherEnum publisher, 
-	LocalDate realeseDate,
+	LocalDate releaseDate,
     int quantity,
     Boolean available
 ) {

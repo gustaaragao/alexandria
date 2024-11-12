@@ -11,11 +11,21 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public record BookCreateDTO(
-        @NotBlank String name,
+        @NotBlank 
+        String name,
+        
         @NotBlank
         String author,
-        @Enumerated GenreEnum genre,
-        @Enumerated PublisherEnum publisher,
-        @PositiveOrZero int quantity,
-        @PastOrPresent LocalDate releaseDate) {
+        
+        @Enumerated 
+        GenreEnum genre,
+        
+        @Enumerated 
+        PublisherEnum publisher,
+        
+        @PositiveOrZero 
+        int quantity,
+        
+        @PastOrPresent 
+        LocalDate releaseDate) {
 }

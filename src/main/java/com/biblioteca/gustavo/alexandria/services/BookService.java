@@ -71,6 +71,8 @@ public class BookService {
             Book book = bookOptional.get();
 
             book.updateInformation(bookUpdateDTO);
+
+            return new BookResponseDTO(book);
         }
 
         throw new ResourceNotFoundException("Book not found with id: " + idBook);

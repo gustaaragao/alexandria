@@ -7,6 +7,7 @@ import com.biblioteca.gustavo.alexandria.dto.BookUpdateDTO;
 import com.biblioteca.gustavo.alexandria.enums.GenreEnum;
 import com.biblioteca.gustavo.alexandria.enums.PublisherEnum;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -31,19 +32,10 @@ import lombok.Setter;
 @EqualsAndHashCode(of = "id")
 public class Book {
 
-	public Book(BookCreateDTO bookDTO) {
-		this.name = bookDTO.name();
-		this.genre = bookDTO.genre();
-		this.author = bookDTO.author();
-		this.publisher = bookDTO.publisher();
-		this.releaseDate = bookDTO.releaseDate();
-		this.quantity = bookDTO.quantity();
-		this.available = true;
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
 	private String name;
 	private String author;
 
@@ -53,9 +45,21 @@ public class Book {
 	@Enumerated(EnumType.STRING)
 	private PublisherEnum publisher;
 
+	@Column(name = "release_date")
 	private LocalDate releaseDate;
+	
 	private int quantity;
 	private boolean available;
+
+	public Book(BookCreateDTO bookDTO) {
+		this.name = bookDTO.name();
+		this.genre = bookDTO.genre();
+		this.author = bookDTO.author();
+		this.publisher = bookDTO.publisher();
+		this.releaseDate = bookDTO.releaseDate();
+		this.quantity = bookDTO.quantity();
+		this.available = true;
+	}
 
 	public void updateInformation(BookUpdateDTO bookDTO) {
 		if (bookDTO.name() != null)

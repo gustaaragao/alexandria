@@ -1,0 +1,11 @@
+CREATE TABLE books (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  author VARCHAR(100) NOT NULL,
+  genre VARCHAR(100) NOT NULL,
+  publisher VARCHAR(100) NOT NULL,
+  release_date VARCHAR(100) NOT NULL,
+  quantity INT NOT NULL,
+    
+  PRIMARY KEY (id)
+);

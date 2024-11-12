@@ -1,6 +1,6 @@
 package com.biblioteca.gustavo.alexandria.enums;
 
-public enum GeneroEnum {
+public enum GenreEnum {
     AVENTURA,
     ROMANCE,
     DRAMA

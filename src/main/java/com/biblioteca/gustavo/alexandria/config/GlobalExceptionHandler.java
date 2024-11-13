@@ -27,13 +27,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorDTO> handleGenericException(Exception ex) {
-        var apiError = new ApiErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno no servidor");
+        var apiError = new ApiErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
     }
 
     @ExceptionHandler(BookNotFoundException.class)
-    public ResponseEntity<ApiErrorDTO> handleBookNotFoundException() {
-        var apiError = new ApiErrorDTO(HttpStatus.NOT_FOUND, "Livro não encontrado");
+    public ResponseEntity<ApiErrorDTO> handleBookNotFoundException(BookNotFoundException ex) {
+        var apiError = new ApiErrorDTO(HttpStatus.NOT_FOUND, ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 

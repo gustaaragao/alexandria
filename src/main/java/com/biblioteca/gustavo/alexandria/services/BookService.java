@@ -4,9 +4,9 @@ package com.biblioteca.gustavo.alexandria.services;
 import com.biblioteca.gustavo.alexandria.dto.BookCreateDTO;
 import com.biblioteca.gustavo.alexandria.dto.BookResponseDTO;
 import com.biblioteca.gustavo.alexandria.dto.BookUpdateDTO;
-import com.biblioteca.gustavo.alexandria.exceptions.AlreadyDisabledException;
-import com.biblioteca.gustavo.alexandria.exceptions.AlreadyEnabledException;
-import com.biblioteca.gustavo.alexandria.exceptions.ResourceNotFoundException;
+import com.biblioteca.gustavo.alexandria.exceptions.BookAlreadyDisabledException;
+import com.biblioteca.gustavo.alexandria.exceptions.BookAlreadyEnabledException;
+import com.biblioteca.gustavo.alexandria.exceptions.BookNotFoundException;
 import com.biblioteca.gustavo.alexandria.model.Book;
 import com.biblioteca.gustavo.alexandria.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,7 @@ public class BookService {
         return books.stream().map(BookResponseDTO::new).toList();
     }
 
-    public BookResponseDTO getBookById(Long idBook) throws ResourceNotFoundException {
+    public BookResponseDTO getBookById(Long idBook) throws BookNotFoundException {
         Optional<Book> bookOptional = bookRepository.findById(idBook);
 
         if (bookOptional.isPresent()) {
@@ -60,10 +60,10 @@ public class BookService {
             return new BookResponseDTO(book);
         }
 
-        throw new ResourceNotFoundException("Book not found with id: " + idBook);
+        throw new BookNotFoundException(idBook);
     }
 
-    public BookResponseDTO updateBook(Long idBook, BookUpdateDTO bookUpdateDTO) throws ResourceNotFoundException {
+    public BookResponseDTO updateBook(Long idBook, BookUpdateDTO bookUpdateDTO) throws BookNotFoundException {
 
         Optional<Book> bookOptional = bookRepository.findById(idBook);
 
@@ -75,40 +75,40 @@ public class BookService {
             return new BookResponseDTO(book);
         }
 
-        throw new ResourceNotFoundException("Book not found with id: " + idBook);
+        throw new BookNotFoundException(idBook);
     }
 
-    public void deleteBook(Long idBook) throws ResourceNotFoundException {
+    public void deleteBook(Long idBook) throws BookNotFoundException {
         if (!bookRepository.existsById(idBook)) {
-            throw new ResourceNotFoundException("Book not found with id: " + idBook);
+            throw new BookNotFoundException(idBook);
         }
 
         bookRepository.deleteById(idBook);
     }
 
-    public void disableBook(Long idBook) throws ResourceNotFoundException, AlreadyDisabledException {
+    public void disableBook(Long idBook) throws BookNotFoundException, BookAlreadyDisabledException {
         if (!bookRepository.existsById(idBook)) {
-            throw new ResourceNotFoundException("Book not found with id: " + idBook);
+            throw new BookNotFoundException(idBook);
         }
 
         Book book = bookRepository.findById(idBook).get();
 
         if (!book.isAvailable()) {
-            throw new AlreadyDisabledException("Book with id " + idBook + " is already disabled");
+            throw new BookAlreadyDisabledException("Book with id " + idBook + " is already disabled");
         }
 
         book.setAvailable(false);
     }
 
-    public void enableBook(Long idBook) throws ResourceNotFoundException, AlreadyEnabledException {
+    public void enableBook(Long idBook) throws BookNotFoundException, BookAlreadyEnabledException {
         if (!bookRepository.existsById(idBook)) {
-            throw new ResourceNotFoundException("Book not found with id: " + idBook);
+            throw new BookNotFoundException(idBook);
         }
 
         Book book = bookRepository.findById(idBook).get();
 
         if (book.isAvailable()) {
-            throw new AlreadyEnabledException("Book with id " + idBook + " is already enabled");
+            throw new BookAlreadyEnabledException("Book with id " + idBook + " is already enabled");
         }
 
         book.setAvailable(true);

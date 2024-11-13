@@ -6,6 +6,7 @@ import com.biblioteca.gustavo.alexandria.enums.GenreEnum;
 import com.biblioteca.gustavo.alexandria.enums.PublisherEnum;
 import com.biblioteca.gustavo.alexandria.model.Book;
 
+// TODO: Responses devem receber validação? 
 public record BookResponseDTO(
     Long id, 
 	String name, 

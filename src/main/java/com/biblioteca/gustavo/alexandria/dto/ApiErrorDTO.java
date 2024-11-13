@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 
 import lombok.Builder;
 
+// Será que essa abordagem é boa? Eu me inspirei em uma que eu vi no Baeldung.
 @Builder
 public record ApiErrorDTO(
     LocalDateTime timestamp,

@@ -94,7 +94,7 @@ public class BookService {
         Book book = bookRepository.findById(idBook).get();
 
         if (!book.isAvailable()) {
-            throw new BookAlreadyDisabledException("Book with id " + idBook + " is already disabled");
+            throw new BookAlreadyDisabledException(idBook);
         }
 
         book.setAvailable(false);

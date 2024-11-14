@@ -8,4 +8,12 @@ public class BookAlreadyDisabledException extends RuntimeException {
     public BookAlreadyDisabledException(String message) {
         super(message);
     }
+
+    public BookAlreadyDisabledException(Long idBook) {
+        super("Book with id " + idBook + " is already disabled.");
+    }
+
+    public BookAlreadyDisabledException() {
+        super("Book is already disabled.");
+    }
 }

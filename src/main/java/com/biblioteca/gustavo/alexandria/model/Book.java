@@ -23,12 +23,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Table(name = "books")
-@Entity(name = "books")
-@Getter
-@Setter
+@Entity(name = "Book")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @EqualsAndHashCode(of = "id")
 public class Book {
 
